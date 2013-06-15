@@ -11,18 +11,18 @@ function partition(&$data,$low,$high) {
 	$pivot=$data[$low];
 	while($low<$high) {
 		while($low<$high && $data[$high]>=$pivot) {
-			--$high;		
+			$high--;
 		}
 		$data[$low] = $data[$high];
 		while($low<$high && $data[$low]<=$pivot) {
-			++$low;
+			$low++;
 		}
 		$data[$high] = $data[$low];
 	}
 	$data[$low] = $pivot;
 	return $low;
 }
-$foo = array(3,4,2,1,5,8,7);
+$foo = array(3,4,2);
 quicksort($foo,0,count($foo)-1);
 print_r($foo);exit;
 
