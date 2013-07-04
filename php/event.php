@@ -1,5 +1,5 @@
 <?php
-//EventSubscriber ÅúÁ¿Ìí¼ÓListener
+//EventSubscriber æ‰¹é‡æ·»åŠ Listener
 interface EventSubscriber {
    public function getSubscribedEvents();
 }
@@ -9,7 +9,8 @@ class CustomeEventSubscriber implements EventSubscriber {
 			'respone'=>array(
 				array('onResponse1',3),
 				array('onResponse2',1),
-				array('onResponse3',2)
+				array('onResponse3',2),
+				array(function(Event $event){ echo 'Closure executed!!!<br/>'; } ,2)
 			)
 		);
 	}
@@ -23,7 +24,7 @@ class CustomeEventSubscriber implements EventSubscriber {
 		 $event->onResponse(__FUNCTION__);
 	}
 }
-//Event ÊÂ¼þ
+//Event äº‹ä»¶
 class Event {
 	private $popagationStopped = false;
 	public function setPopagationStopped() {
@@ -38,7 +39,7 @@ class CustomEvent extends Event {
 		echo $function . ' Event executed!!!<br/>';
 	}
 }
-//EventDispather  ÊÂ¼þ·Ö·¢
+//EventDispather  äº‹ä»¶åˆ†å‘
 class EventDispather {
 	private $_listeners = array();
 	private $_sorted_listeners = array();
@@ -55,6 +56,13 @@ class EventDispather {
 		foreach($this->_sorted_listeners[$name] as $listener) {
 			if(is_callable($listener)) {
 				call_user_func($listener,$event);
+			} else if($listener[1] instanceof Closure) {
+				call_user_func($listener[1],$event);
+			} else {
+				throw new Exception('Illegal listerner');
+			}
+			if($event->isPopagationStopped()) {
+				break;	
 			}
 		}
 	}
@@ -79,16 +87,16 @@ class EventDispather {
 		}
 	}
 }
-//ÊµÀý»¯ÊÂ¼þ
+//å®žä¾‹åŒ–äº‹ä»¶
 $event = new CustomEvent();
-//×éÖ¯Ã°ÅÝÊÂ¼þ
+//é˜»æ­¢å†’æ³¡äº‹ä»¶
 //$event->setPopagationStopped();
-//ÊµÀý»¯ÊÂ¼þÌá¹©Õß
+//å®žä¾‹åŒ–äº‹ä»¶æä¾›è€…
 $event_subscriber = new CustomeEventSubscriber();
-//ÊµÀý»¯ÊÂ¼þ·Ö·¢Æ÷
+//å®žä¾‹åŒ–äº‹ä»¶åˆ†å‘å™¨
 $event_dispather = new EventDispather();
-//Ìí¼ÓÊÂ¼þÌá¹©Õß
+//æ·»åŠ äº‹ä»¶æä¾›è€…
 $event_dispather->addSubscriber($event_subscriber);
-//Ö´ÐÐÊÂ¼þ
+//æ‰§è¡Œäº‹ä»¶
 $event_dispather->dispather('respone', $event);
 
