@@ -5,5 +5,5 @@ struct _node_struct {
 	node *lchild,*rchild;
 };
 node_ptr f2t(FILE *fp);
-char *split(char *str,char *split_str);
+char **split(char *str,char *split_str);
 
