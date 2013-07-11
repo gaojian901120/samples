@@ -1,8 +1,10 @@
 CC = gcc
-all: clean install
-install: tree
-tree: tree.o
-	$(CC) -o tree tree.c
-tree.o: tree.c
-	$(CC) -c -o tree.o tree.c
-clean:  
+objects = tree.o queue.o
+tree: $(objects)
+	$(CC) -g -o tree $(objects)
+tree.o: tree.h
+queue.o: queue.h
+
+.PHONY : clean
+clean:
+	-rm tree $(objects)

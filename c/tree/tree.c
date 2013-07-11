@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "queue.h"
 #include "tree.h"
-node_ptr f2t(FILE *fp) {
-	char *s, **data;
+void f2t(FILE *fp,tree_node *tree) {
+	char *s;
+	queue_t data;
 	long flen;
     fseek(fp,0L,SEEK_END);
     flen = ftell(fp);
@@ -18,23 +20,25 @@ node_ptr f2t(FILE *fp) {
 	s[flen] = '\0';
 	data = split(s," ");
 }
-char **split(char *str,char *split_str) {
+queue_t split(char *str,char *split_str) {
 	char *ptr = NULL;
+	queue_t queue;
+	init_queue(&queue);
 	ptr = strtok(str,split_str);
-	while(ptr ! = NULL) {
-		printf("%s\n", ptr);
-		strcpy(*ret,ptr);
+	while(ptr != NULL) {
+		push_queue(&queue,ptr);
 		ptr = strtok(NULL,split_str);
-		ret++;
 	}
-	return ret;
+	printf("%s",pop_queue(&queue));
+	return queue;
 }
+
 void main() {
 	FILE *fp;
-	node *tree;
+	tree_node *tree;
 	if((fp = fopen("tree.data","r")) ==NULL) {
 		fprintf(stderr,"can't open file tree");
 		exit(1);
 	}
-	tree = f2t(fp);
+	f2t(fp,tree);
 }

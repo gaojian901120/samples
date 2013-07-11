@@ -1,9 +1,7 @@
-typedef struct _node_struct node;
-typedef node *node_ptr;
-struct _node_struct {
+typedef struct _tree_node_struct {
 	char *data;
-	node *lchild,*rchild;
-};
-node_ptr f2t(FILE *fp);
-char **split(char *str,char *split_str);
-
+	struct _tree_node_struct *lchild,*rchild;
+} tree_node;
+typedef tree_node *tree_node_ptr;
+void f2t(FILE *fp,tree_node *tree);
+queue_t split(char *str,char *split_str);
