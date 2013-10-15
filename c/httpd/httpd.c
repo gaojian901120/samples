@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/param.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <err.h>
 #include <event.h>
@@ -15,7 +20,7 @@ int main() {
     event_init();
     httpd = evhttp_start(HOST,PORT);
     if(httpd == NULL) {
-        fprintf(stderr, "Error: Unable to listen on %s:%d\n\n");
+        fprintf(stderr, "Error: Unable to listen on %s:%d\n\n", HOST, PORT);
         exit(1);
     }
     evhttp_set_timeout(httpd,2000);
@@ -47,7 +52,7 @@ void http_handle(struct evhttp_request *req, void *arg) {
         if(strcmp(http_input_opt,"put") == 0){  
             int buffer_data_len = EVBUFFER_LENGTH(req->input_buffer);  
             if(buffer_data_len > 0){ /* POST METHOD */  
-                char *input_value_data = EVBUFFER_DATA(req->input_buffer); /* Submited Data */  
+                char *input_value_data = (char *) EVBUFFER_DATA(req->input_buffer); /* Submited Data */  
                 fprintf(stderr,"%s \n",input_value_data);  
             }else if(http_input_data != NULL){  
                 fprintf(stderr,"%s \n",http_input_data);  
