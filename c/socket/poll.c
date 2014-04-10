@@ -17,18 +17,16 @@
  */
 
 #include <stdio.h>
-#include <sys/time.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <asm/ioctls.h>
-#include <errno.h>
-#include <sys/select.h>
 #include <fcntl.h>
-#define ZERO (fd_set *)0
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <errno.h>
+#include <poll.h>
+#define MAX_CONNECTION_NUM 1024
+#define TIMEOUT 50000
 
 int main(int argc, char** argv)
 {
@@ -43,7 +41,9 @@ int main(int argc, char** argv)
 //    unsigned long mode=1; 
     int flags;
     int error;
-    
+    int connection_num = 0;
+    struct pollfd fds[MAX_CONNECTION_NUM];
+
     void msg()
     {
         system("clear");
@@ -76,6 +76,7 @@ int main(int argc, char** argv)
         int i;
         for (i =startport; i <=endport ; i++)
         {   
+            connection_num++;
             printf("try to connecting %s:%d...\n", ip, i);
 
             to.sin_port=htons(i); /* 将端口转换成网络字节序 */
@@ -91,52 +92,27 @@ int main(int argc, char** argv)
             
             flags=fcntl(sockfd, F_GETFL, 0);
             fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);
-            int nRet = connect(sockfd, (struct sockaddr *)&to, sizeof(to));
-                         
-            if ( -1 == nRet )
-            {         
-                if(errno != EINPROGRESS)
-                {
-                    perror("connect");
-                    //return -1;
-                    continue;
-                }
-                
-                FD_ZERO(&mask);
-                FD_SET(sockfd,&mask);
+            fds[i].fd = sockfd;
+            fds[i].events = POLLIN;
+        }
+        int index=0;
+        if (poll(fds, MAX_CONNECTION_NUM, TIMEOUT) <= 0)
+        {
+            printf("poll error\n";
+            return 1;
+        }
+        while(fds[index].events) {
+            if (fds[index].revents)
+            {
+                int nRet = connect(sockfd, (struct sockaddr *)&to, sizeof(to));
+                             
+                if ( -1 == nRet ) {
 
-                timeout.tv_sec=0; 
-                timeout.tv_usec=50000;
-        
-                switch (select(sockfd + 1, NULL, &mask, NULL, &timeout)) 
-                {
-                    case -1:
-                        close(sockfd);
-                        printf("select error\n"); 
-                        perror( "select" );
-                        break;
-                    case 0:
-                        close(sockfd); 
-                        break;
-                    default: 
-                        error = 0;
-                        socklen_t len = sizeof(int);
-                        if (( 0 == getsockopt(sockfd,SOL_SOCKET,SO_ERROR,&error,&len) ))
-                        {   
-                            if( 0 == error )
-                            { 
-                                printf("%s %d open\n", ip, i);
-                                close(sockfd);
-                            }
-                        }
-                        break;
+                } else {
+
                 }
             }
-            else if( 0 == nRet )
-            {     
-                close(sockfd);
-                printf("Connected: %s %d open\n", ip, i);
-            }
+            index++;
         }
     } 
     else if (5 == argc)

@@ -32,7 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-noinst_PROGRAMS = poll$(EXEEXT)
+noinst_PROGRAMS = socket$(EXEEXT) select$(EXEEXT) poll$(EXEEXT)
 subdir = .
 DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/configure depcomp \
@@ -52,6 +52,16 @@ poll_OBJECTS = $(am_poll_OBJECTS)
 poll_LDADD = $(LDADD)
 poll_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(poll_LDFLAGS) $(LDFLAGS) \
 	-o $@
+am_select_OBJECTS = select.$(OBJEXT)
+select_OBJECTS = $(am_select_OBJECTS)
+select_LDADD = $(LDADD)
+select_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(select_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_socket_OBJECTS = select.$(OBJEXT) poll.$(OBJEXT)
+socket_OBJECTS = $(am_socket_OBJECTS)
+socket_LDADD = $(LDADD)
+socket_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(socket_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -60,8 +70,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(poll_SOURCES)
-DIST_SOURCES = $(poll_SOURCES)
+SOURCES = $(poll_SOURCES) $(select_SOURCES) $(socket_SOURCES)
+DIST_SOURCES = $(poll_SOURCES) $(select_SOURCES) $(socket_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -158,6 +168,10 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
+socket_SOURCES = select.c poll.c
+socket_LDFLAGS = 
+select_SOURCES = select.c
+select_LDFLAGS = 
 poll_SOURCES = poll.c
 poll_LDFLAGS = 
 all: all-am
@@ -204,6 +218,12 @@ clean-noinstPROGRAMS:
 poll$(EXEEXT): $(poll_OBJECTS) $(poll_DEPENDENCIES) 
 	@rm -f poll$(EXEEXT)
 	$(poll_LINK) $(poll_OBJECTS) $(poll_LDADD) $(LIBS)
+select$(EXEEXT): $(select_OBJECTS) $(select_DEPENDENCIES) 
+	@rm -f select$(EXEEXT)
+	$(select_LINK) $(select_OBJECTS) $(select_LDADD) $(LIBS)
+socket$(EXEEXT): $(socket_OBJECTS) $(socket_DEPENDENCIES) 
+	@rm -f socket$(EXEEXT)
+	$(socket_LINK) $(socket_OBJECTS) $(socket_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -212,6 +232,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poll.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/select.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

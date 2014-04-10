@@ -598,7 +598,7 @@ PACKAGE_VERSION=
 PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
-ac_unique_file="poll.c"
+ac_unique_file="socket.c"
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
@@ -2247,7 +2247,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE=poll
+ PACKAGE=socket
  VERSION=1.0
 
 
