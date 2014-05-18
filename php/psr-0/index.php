@@ -1,6 +1,6 @@
 <?php
-use vendor\Sam\Test\Controller;
-use vendor\Sam\Test\Model;
+use vendor\App\Controller\Controller;
+use vendor\App\Model\Model;
 
 function autoloader($className)   
 {   
