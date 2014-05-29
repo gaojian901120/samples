@@ -1,6 +1,6 @@
 <?php
-use vendor\App\Controller\Controller;
-use vendor\App\Model\Model;
+use src\App\Controller\Controller;
+use src\App\Model\Model;
 
 function autoloader($className)   
 {   

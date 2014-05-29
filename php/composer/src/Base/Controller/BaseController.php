@@ -1,5 +1,5 @@
 <?php
-namespace vendor\Base\Controller;
+namespace Base\Controller;
 
 abstract class BaseController {
 	public function __construct() {

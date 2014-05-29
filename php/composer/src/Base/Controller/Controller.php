@@ -1,7 +1,7 @@
 <?php
-namespace vendor\Base\Controller;
+namespace Base\Controller;
 
-use vendor\Base\Controller\BaseController;
+use Base\Controller\BaseController;
 
 abstract class Controller extends BaseController {
 	public function __construct() {

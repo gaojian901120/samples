@@ -1,5 +1,5 @@
 <?php
-namespace vendor\Base\Model;
+namespace Base\Model;
 
 class BaseModel {
 	public function __construct() {
